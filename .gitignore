@@ -3,3 +3,4 @@ doormat-prereqs/.terraform.lock.hcl
 doormat-prereqs/terraform.tfstate
 doormat-prereqs/terraform.tfstate.backup
 .DS_Store
+.tokens.txt

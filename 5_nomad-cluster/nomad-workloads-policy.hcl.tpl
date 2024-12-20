@@ -13,3 +13,7 @@ path "secret/metadata/{{identity.entity.aliases.${accessor}.metadata.nomad_names
 path "secret/metadata/*" {
   capabilities = ["list"]
 }
+
+path "consul/role/reader-role" {
+  capabilities = ["read"]
+}

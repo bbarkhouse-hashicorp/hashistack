@@ -343,3 +343,16 @@ resource "null_resource" "bootstrap_acl" {
     EOF
   }
 }
+
+resource "vault_consul_secret_backend" "consul" {
+  path = "consul"
+  token = data.terraform_remote_state.hcp_clusters.outputs.consul_root_token
+  address = data.terraform_remote_state.hcp_clusters.outputs.hcp_consul_cluster.hashistack.consul_public_endpoint_url
+}
+resource "vault_consul_secret_backend_role" "reader" {
+  name = "reader-role"
+  backend = vault_consul_secret_backend.consul.path
+  consul_policies = [
+    "consul-management-plane-ui-read-only",
+  ]
+}

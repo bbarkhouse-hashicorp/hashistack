@@ -351,3 +351,11 @@ resource "aws_alb_listener" "nomad_traefik_alb_listener" {
     target_group_arn = aws_alb_target_group.nomad_traefik_alb_tg.arn
   }
 }
+resource "aws_autoscaling_attachment" "x86_node_asg_attachment" {
+  autoscaling_group_name = aws_autoscaling_group.nomad_client_x86_asg.id
+  lb_target_group_arn    = aws_alb_target_group.nomad_traefik_alb_tg.arn
+}
+resource "aws_autoscaling_attachment" "arm_node_asg_attachment" {
+  autoscaling_group_name = aws_autoscaling_group.nomad_client_arm_asg.id
+  lb_target_group_arn    = aws_alb_target_group.nomad_traefik_alb_tg.arn
+}

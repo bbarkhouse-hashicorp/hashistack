@@ -319,7 +319,8 @@ resource "aws_security_group" "nomad_traefik_lb" {
     from_port = 8082
     to_port = 8082
     protocol = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    #cidr_blocks = ["0.0.0.0/0"]
+    self = true
   }
 
   egress {

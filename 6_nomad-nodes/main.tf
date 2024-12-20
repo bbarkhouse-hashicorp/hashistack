@@ -316,10 +316,10 @@ resource "aws_security_group" "nomad_traefik_lb" {
   }
 
   ingress {
-    from_port = 0
-    to_port = 0
-    protocol = "-1"
-    self = true
+    from_port = 8082
+    to_port = 8082
+    protocol = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   egress {
@@ -333,7 +333,7 @@ resource "aws_security_group" "nomad_traefik_lb" {
     from_port = 8082
     to_port = 8082
     protocol = "tcp"
-    self = true
+    cidr_blocks = data.terraform_remote_state.networking.outputs.subnet_cidrs
   }
 }
 

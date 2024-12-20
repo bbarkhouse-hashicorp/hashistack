@@ -328,6 +328,13 @@ resource "aws_security_group" "nomad_traefik_lb" {
     protocol    = "tcp"
     cidr_blocks = data.terraform_remote_state.networking.outputs.subnet_cidrs
   }
+
+  egress {
+    from_port = 8082
+    to_port = 8082
+    protocol = "tcp"
+    self = true
+  }
 }
 
 resource "aws_alb" "nomad_traefik_alb" {

@@ -14,6 +14,6 @@ path "secret/metadata/*" {
   capabilities = ["list"]
 }
 
-path "consul/role/reader-role" {
+path "consul/creds/reader-role" {
   capabilities = ["read"]
 }

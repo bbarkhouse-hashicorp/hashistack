@@ -324,7 +324,7 @@ resource "aws_security_group" "nomad_traefik_lb" {
 }
 resource "aws_vpc_security_group_ingress_rule" "nomad_traefik_health_ingress_rule" {
   security_group_id = aws_alb.nomad_traefik_alb.id
-  cidr_ipv4 = data.terraform_remote_state.networking.outputs.public_subnets_cidr_blocks
+  cidr_ipv4 = data.terraform_remote_state.networking.outputs.subnet_cidrs
   from_port = 8082
   ip_protocol = "tcp"
   to_port = 8082

@@ -303,3 +303,51 @@ resource "aws_autoscaling_group" "nomad_client_arm_asg" {
     create_before_destroy = true
   }
 }
+resource "aws_security_group" "nomad_traefik_lb" {
+  name        = "nomad_traefik_lb_sg"
+  description = "Allow inbound traffic"
+  vpc_id      = data.terraform_remote_state.networking.outputs.vpc_id
+
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 8080
+    to_port     = 8080
+    protocol    = "tcp"
+    cidr_blocks = data.terraform_remote_state.networking.outputs.subnet_cidrs
+  }
+}
+
+resource "aws_alb" "nomad_traefik_alb" {
+  name            = "nomad-traefik-alb"
+  security_groups = [aws_security_group.nomad_traefik_lb.id]
+  subnets         = data.terraform_remote_state.networking.outputs.subnet_ids
+}
+
+resource "aws_alb_target_group" "nomad_traefik_alb_tg" {
+  name     = "traefik"
+  port     = 8080
+  protocol = "HTTP"
+  vpc_id   = data.terraform_remote_state.networking.outputs.vpc_id
+
+  health_check {
+    path = "/ping"
+    port = "8082"
+  }
+}
+
+resource "aws_alb_listener" "nomad_traefik_alb_listener" {
+  load_balancer_arn = aws_alb.nomad_traefik_alb.arn
+  port              = "80"
+  protocol          = "HTTP"
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_alb_target_group.nomad_traefik_alb_tg.arn
+  }
+}

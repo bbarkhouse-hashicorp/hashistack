@@ -12,7 +12,7 @@ jq '.ports = {"grpc":8502}' /etc/consul.d/client.temp.3 > /etc/consul.d/consul.j
 sudo systemctl restart consul
 
 # Configure systemd-resolved for Consul DNS forwarding
-sudo mkdir /etc/etc/systemd/resolved.conf.d
+sudo mkdir /etc/systemd/resolved.conf.d
 sudo echo "[Resolve]
 DNS=127.0.0.1:8600
 DNSSEC=false

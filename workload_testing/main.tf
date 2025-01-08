@@ -27,6 +27,12 @@ provider "vault" {
   token = data.terraform_remote_state.hcp_clusters.outputs.vault_root_token
   namespace = "admin"
 }
+
+data "vault_kv_secret_v2" "bootstrap" {
+  mount = data.terraform_remote_state.nomad_cluster.outputs.bootstrap_kv
+  name  = "nomad_bootstrap/SecretID"
+}
+
 provider "nomad" {
   address = data.terraform_remote_state.nomad_cluster.outputs.nomad_public_endpoint
   secret_id = data.vault_kv_secret_v2.bootstrap.data["SecretID"]
@@ -47,10 +53,25 @@ data "terraform_remote_state" "hcp_clusters" {
   }
 }
 
+data "terraform_remote_state" "nomad_cluster" {
+  backend = "remote"
+
+  config = {
+    organization = var.tfc_organization
+    workspaces = {
+      name = "5_nomad-cluster"
+    }
+  }
+}
+
 variable "service_name" {
     type = string
     default = "demo-mongodb"
   
+}
+
+variable "tfc_organization" {
+  type = string
 }
 
 resource "nomad_job" "mongodb" {

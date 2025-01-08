@@ -93,7 +93,7 @@ resource "nomad_job" "mongodb" {
         service {
             name = "${var.service_name}"
             port = "27017"
-            address = $${attr.unique.platform.aws.public-ipv4}
+            address = "$${attr.unique.platform.aws.public-ipv4}"
         } 
 
         task "mongodb" {
@@ -103,7 +103,7 @@ resource "nomad_job" "mongodb" {
                 image = "mongo:5"
             }
             env {
-                # This will immedietely be rotated be Vault
+                # This will immediately be rotated be Vault
                 MONGO_INITDB_ROOT_USERNAME = "admin"
                 MONGO_INITDB_ROOT_PASSWORD = "password"
             }

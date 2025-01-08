@@ -121,6 +121,8 @@ resource "vault_database_secrets_mount" "db" {
     path = "db"
     mongodb {
         name = "mongodb"
+        username             = "admin"
+        password             = "password"
         connection_url = "mongodb://{{username}}:{{password}}@${data.consul_service.mongodb.name}.service.consul"
         #How do I get a valid port from the node?
     }

@@ -36,6 +36,17 @@ address = data.terraform_remote_state.hcp_clusters.consul_public_endpoint
 token = data.terraform_remote_state.hcp_clusters.consul_root_token
 }
 
+data "terraform_remote_state" "hcp_clusters" {
+  backend = "remote"
+
+  config = {
+    organization = var.tfc_organization
+    workspaces = {
+      name = "2_hcp-clusters"
+    }
+  }
+}
+
 variable "service_name" {
     type = string
     default = "demo-mongodb"

@@ -121,7 +121,7 @@ resource "vault_database_secrets_mount" "db" {
     path = "db"
     mongodb {
         name = "mongodb"
-        connection_url = "mongodb://{{username}}:{{password}}@${data.consul_service.mongodb.name}.service.consul:${data.consul_service.mongodb.port}"
+        connection_url = "mongodb://{{username}}:{{password}}@${data.consul_service.mongodb.name}.service.consul"
     }
     depends_on = [ nomad_job.mongodb ]
 }

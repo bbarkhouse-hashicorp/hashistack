@@ -38,8 +38,8 @@ provider "nomad" {
   secret_id = data.vault_kv_secret_v2.bootstrap.data["SecretID"]
 }
 provider "consul" {
-address = data.terraform_remote_state.hcp_clusters.consul_public_endpoint
-token = data.terraform_remote_state.hcp_clusters.consul_root_token
+address = data.terraform_remote_state.hcp_clusters.outputs.consul_public_endpoint
+token = data.terraform_remote_state.hcp_clusters.outputs.consul_root_token
 }
 
 data "terraform_remote_state" "hcp_clusters" {
@@ -93,7 +93,7 @@ resource "nomad_job" "mongodb" {
         service {
             name = "${var.service_name}"
             port = "27017"
-            address = "${attr.unique.platform.aws.public-ipv4}"
+            address = $${attr.unique.platform.aws.public-ipv4}
         } 
 
         task "mongodb" {

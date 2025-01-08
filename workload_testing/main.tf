@@ -23,9 +23,9 @@ terraform {
   }
 }
 provider "vault" {
-  address = data.terraform_remote_state.hcp_clusters.outputs.vault_public_endpoint
-  token = data.terraform_remote_state.hcp_clusters.outputs.vault_root_token
-  namespace = "admin"
+  #address = data.terraform_remote_state.hcp_clusters.outputs.vault_public_endpoint
+  #token = data.terraform_remote_state.hcp_clusters.outputs.vault_root_token
+  #namespace = "admin"
 }
 
 data "vault_kv_secret_v2" "bootstrap" {
@@ -122,6 +122,7 @@ resource "vault_database_secrets_mount" "db" {
     mongodb {
         name = "mongodb"
         connection_url = "mongodb://{{username}}:{{password}}@${data.consul_service.mongodb.name}.service.consul"
+        #How do I get a valid port from the node?
     }
     depends_on = [ nomad_job.mongodb ]
 }

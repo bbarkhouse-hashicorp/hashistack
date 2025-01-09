@@ -205,3 +205,19 @@ resource "nomad_job" "ebs-nodes" {
 EOT  
 }
 
+data "nomad_plugin" "ebs" {
+    plugin_id = "aws-ebs0"
+    wait_for_healthy = true
+}
+
+resource "nomad_csi_volume_registration" "nomad_volume" {
+  depends_on = [data.nomad_plugin.ebs]
+  plugin_id = "aws-ebs0"
+  volume_id = "nomad"
+  name = "nomad"
+  external_id = aws_ebs_volume.nomad.id
+  capability {
+    access_mode = "single-node-writer"
+    attachment_mode = "file-system"
+  }
+}

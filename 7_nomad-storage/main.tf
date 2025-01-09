@@ -256,7 +256,7 @@ job "mysql-server" {
 
     network {
       port "db" {
-        to = 3306
+        static = 3306
       }
     }
 

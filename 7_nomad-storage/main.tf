@@ -206,6 +206,9 @@ resource "nomad_csi_volume_registration" "nomad_volume-1a" {
     access_mode = "single-node-writer"
     attachment_mode = "file-system"
   }
+  lifecycle {
+    ignore_changes = [ all ]
+  }
 }
 
 resource "nomad_csi_volume_registration" "nomad_volume-1b" {
@@ -218,6 +221,9 @@ resource "nomad_csi_volume_registration" "nomad_volume-1b" {
     access_mode = "single-node-writer"
     attachment_mode = "file-system"
   }
+    lifecycle {
+    ignore_changes = [ all ]
+  }
 }
 
 resource "nomad_csi_volume_registration" "nomad_volume-1c" {
@@ -229,6 +235,9 @@ resource "nomad_csi_volume_registration" "nomad_volume-1c" {
   capability {
     access_mode = "single-node-writer"
     attachment_mode = "file-system"
+  }
+    lifecycle {
+    ignore_changes = [ all ]
   }
 }
 
@@ -256,7 +265,7 @@ job "mysql-server" {
 
     network {
       port "db" {
-        static = 3306
+        to = 3306
       }
     }
 

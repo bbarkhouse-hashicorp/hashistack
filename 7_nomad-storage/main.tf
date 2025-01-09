@@ -97,13 +97,13 @@ data "aws_autoscaling_group" "ag" {
 }
 
 locals {
-az = tolist(data.aws_autoscaling_group.ag.availability_zones)[0].availability_zone 
+az = tolist(data.aws_autoscaling_group.ag.availability_zones)
 }
 
 
 resource "aws_ebs_volume" "nomad" {
   #availability_zone = aws_instance.client[0].availability_zone
-  availability_zone = local.az
+  availability_zone = local.az[0]
   size              = 40
 }
 

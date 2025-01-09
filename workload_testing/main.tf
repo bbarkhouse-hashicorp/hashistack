@@ -128,7 +128,7 @@ resource "vault_database_secrets_mount" "db" {
         name = "mongodb"
         username             = "admin"
         password             = "password"
-        connection_url = "mongodb://{{username}}:{{password}}@nomad-traefik-alb-1210287401.us-east-1.elb.amazonaws.com/${var.service_name}"
+        connection_url = "mongodb://{{username}}:{{password}}@nomad-traefik-alb-1210287401.us-east-1.elb.amazonaws.com/${var.service_name}:20013"
     }
     depends_on = [ nomad_job.mongodb ]
 }

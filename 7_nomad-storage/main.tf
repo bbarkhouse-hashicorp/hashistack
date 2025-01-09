@@ -127,6 +127,7 @@ resource "nomad_job" "ebs-controller" {
     jobspec = <<EOT
 job "plugin-aws-ebs-controller" {
   datacenters = ["dc1"]
+  node_pool = "all"
 
   group "controller" {
     task "plugin" {
@@ -163,6 +164,7 @@ resource "nomad_job" "ebs-nodes" {
     jobspec = <<EOT
     job "plugin-aws-ebs-nodes" {
   datacenters = ["dc1"]
+  node_pool = "all"
 
   # you can run node plugins as service jobs as well, but this ensures
   # that all nodes in the DC have a copy.

@@ -240,7 +240,7 @@ job "mysql-server" {
   type        = "service"
   node_pool = "x86"
   constraint {
-    attribute = "${attr.platform.aws.placement.availability-zone}"
+    attribute = "$${attr.platform.aws.placement.availability-zone}"
     value = "us-east-1b"
   }
   group "mysql-server" {

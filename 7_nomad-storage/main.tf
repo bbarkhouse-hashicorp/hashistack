@@ -231,3 +231,78 @@ resource "nomad_csi_volume_registration" "nomad_volume-1c" {
     attachment_mode = "file-system"
   }
 }
+
+resource "nomad_job" "ebs-nodes" {
+    depends_on = [ nomad_csi_volume_registration.nomad_volume-1a, nomad_csi_volume_registration.nomad_volume-1b, nomad_csi_volume_registration.nomad_volume-1c ]
+    jobspec = <<EOT
+job "mysql-server" {
+  datacenters = ["dc1"]
+  type        = "service"
+  node_pool = "x86"
+  constraint {
+    attribute = "${attr.platform.aws.placement.availability-zone}"
+    value = "us-east-1b"
+  }
+  group "mysql-server" {
+    count = 1
+
+    volume "mysql" {
+      type            = "csi"
+      read_only       = false
+      source          = "nomad-us-east-1b"
+      access_mode     = "single-node-writer"
+      attachment_mode = "file-system"
+    }
+
+    network {
+      port "db" {
+        static = 3306
+      }
+    }
+
+    restart {
+      attempts = 10
+      interval = "5m"
+      delay    = "25s"
+      mode     = "delay"
+    }
+
+    task "mysql-server" {
+      driver = "docker"
+
+      volume_mount {
+        volume      = "mysql"
+        destination = "/srv"
+        read_only   = false
+      }
+
+      env {
+        MYSQL_ROOT_PASSWORD = "password"
+      }
+
+      config {
+        image = "hashicorp/mysql-portworx-demo:latest"
+        args  = ["--datadir", "/srv/mysql"]
+        ports = ["db"]
+      }
+
+      resources {
+        cpu    = 500
+        memory = 1024
+      }
+
+      service {
+        name = "mysql-server"
+        port = "db"
+
+        check {
+          type     = "tcp"
+          interval = "10s"
+          timeout  = "2s"
+        }
+      }
+    }
+  }
+}
+EOT
+}

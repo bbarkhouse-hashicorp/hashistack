@@ -33,7 +33,7 @@ provider "hcp" {}
 
 data "doormat_aws_credentials" "creds" {
   provider = doormat
-  role_arn = "arn:aws:iam::${var.aws_account_id}:role/tfc-doormat-role_6_nomad-nodes"
+  role_arn = "arn:aws:iam::${var.aws_account_id}:role/tfc-doormat-role_7_nomad-storage"
 }
 
 provider "aws" {
@@ -118,4 +118,39 @@ capability {
 EOM
 }
 
+resource "nomad_job" "mongodb" {
+    jobspec = <<EOT
+job "plugin-aws-ebs-controller" {
+  datacenters = ["dc1"]
+
+  group "controller" {
+    task "plugin" {
+      driver = "docker"
+
+      config {
+        image = "amazon/aws-ebs-csi-driver:v0.10.1"
+
+        args = [
+          "controller",
+          "--endpoint=unix://csi/csi.sock",
+          "--logtostderr",
+          "--v=5",
+        ]
+      }
+
+      csi_plugin {
+        id        = "aws-ebs0"
+        type      = "controller"
+        mount_dir = "/csi"
+      }
+
+      resources {
+        cpu    = 500
+        memory = 256
+      }
+    }
+  }
+}
+EOT
+}
 

@@ -91,7 +91,7 @@ resource "nomad_job" "mongodb" {
 
         service {
             name = "${var.service_name}"
-            port = "27017"
+            port = "http"
                   tags = [
         "traefik.enable=true",
         "traefik.http.routers.http.rule=PathPrefix(`/${var.service_name}`)",

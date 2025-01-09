@@ -88,9 +88,24 @@ data "terraform_remote_state" "nomad_cluster" {
   }
 }
 
+data "terraform_remote_state" "nomad_nodes" {
+  backend = "remote"
+
+  config = {
+    organization = var.tfc_organization
+    workspaces = {
+      name = "5_nomad-nodes"
+    }
+  }
+}
+
+data "aws_iam_role" "role" {
+    name = "nomad-node"
+}
+
 resource "aws_iam_role_policy" "mount_ebs_volumes" {
   name   = "mount-ebs-volumes"
-  role   = aws_iam_role.instance_role.id
+  role   = data.aws_iam_role.role.id
   policy = data.aws_iam_policy_document.mount_ebs_volumes.json
 }
 
@@ -109,8 +124,13 @@ data "aws_iam_policy_document" "mount_ebs_volumes" {
   }
 }
 
+data "aws_autoscaling_group" "ag" {
+    name = "nomad-client-x86"
+}
+
 resource "aws_ebs_volume" "nomad" {
-  availability_zone = aws_instance.client[0].availability_zone
+  #availability_zone = aws_instance.client[0].availability_zone
+  availability_zone = data.aws_autoscaling_group.ag.availability_zone
   size              = 40
 }
 

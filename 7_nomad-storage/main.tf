@@ -207,7 +207,7 @@ resource "nomad_csi_volume_registration" "nomad_volume-1a" {
     attachment_mode = "file-system"
   }
   lifecycle {
-    ignore_changes = [ all ]
+    ignore_changes = all
   }
 }
 
@@ -222,7 +222,7 @@ resource "nomad_csi_volume_registration" "nomad_volume-1b" {
     attachment_mode = "file-system"
   }
     lifecycle {
-    ignore_changes = [ all ]
+    ignore_changes = all
   }
 }
 
@@ -237,7 +237,7 @@ resource "nomad_csi_volume_registration" "nomad_volume-1c" {
     attachment_mode = "file-system"
   }
     lifecycle {
-    ignore_changes = [ all ]
+    ignore_changes = all
   }
 }
 

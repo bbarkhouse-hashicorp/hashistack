@@ -92,36 +92,22 @@ data "aws_iam_policy_document" "mount_ebs_volumes" {
   }
 }
 
-data "aws_autoscaling_group" "ag" {
-    name = "nomad-client-x86"
-}
-
-locals {
-az = tolist(data.aws_autoscaling_group.ag.availability_zones)
-}
-
-
-resource "aws_ebs_volume" "nomad" {
-  #availability_zone = aws_instance.client[0].availability_zone
-  availability_zone = local.az[0]
+resource "aws_ebs_volume" "nomad-us-east-1a" {
+  availability_zone = "us-east-1a"
   size              = 40
 }
 
-output "ebs_volume" {
-    value = <<EOM
-# volume registration
-type        = "csi"
-id          = "nomad"
-name        = "nomad"
-external_id = "${aws_ebs_volume.nomad.id}"
-plugin_id   = "aws-ebs0"
+resource "aws_ebs_volume" "nomad-us-east-1b" {
+  availability_zone = "us-east-1b"
+  size              = 40
+}
 
-capability {
-  access_mode     = "single-node-writer"
-  attachment_mode = "file-system"
+resource "aws_ebs_volume" "nomad-us-east-1c" {
+  availability_zone = "us-east-1c"
+  size              = 40
 }
-EOM
-}
+
+
 
 resource "nomad_job" "ebs-controller" {
     jobspec = <<EOT
@@ -210,12 +196,36 @@ data "nomad_plugin" "ebs" {
     wait_for_healthy = true
 }
 
-resource "nomad_csi_volume_registration" "nomad_volume" {
+resource "nomad_csi_volume_registration" "nomad_volume-1a" {
   depends_on = [data.nomad_plugin.ebs]
   plugin_id = "aws-ebs0"
-  volume_id = "nomad"
-  name = "nomad"
-  external_id = aws_ebs_volume.nomad.id
+  volume_id = "nomad-us-east-1a"
+  name = "nomad-us-east-1a"
+  external_id = aws_ebs_volume.nomad-us-east-1a.id
+  capability {
+    access_mode = "single-node-writer"
+    attachment_mode = "file-system"
+  }
+}
+
+resource "nomad_csi_volume_registration" "nomad_volume-1b" {
+  depends_on = [data.nomad_plugin.ebs]
+  plugin_id = "aws-ebs0"
+  volume_id = "nomad-us-east-1b"
+  name = "nomad-us-east-1b"
+  external_id = aws_ebs_volume.nomad-us-east-1b.id
+  capability {
+    access_mode = "single-node-writer"
+    attachment_mode = "file-system"
+  }
+}
+
+resource "nomad_csi_volume_registration" "nomad_volume-1c" {
+  depends_on = [data.nomad_plugin.ebs]
+  plugin_id = "aws-ebs0"
+  volume_id = "nomad-us-east-1c"
+  name = "nomad-us-east-1c"
+  external_id = aws_ebs_volume.nomad-us-east-1c.id
   capability {
     access_mode = "single-node-writer"
     attachment_mode = "file-system"

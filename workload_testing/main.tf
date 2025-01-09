@@ -85,7 +85,6 @@ resource "nomad_job" "mongodb" {
         network {
             mode = "bridge"
             port "http" {
-                static = 27017
                 to     = 27017
             }
         }
@@ -93,6 +92,12 @@ resource "nomad_job" "mongodb" {
         service {
             name = "${var.service_name}"
             port = "27017"
+                  tags = [
+        "traefik.enable=true",
+        "traefik.http.routers.http.rule=PathPrefix(`/${var.service_name}`)",
+        "traefik.http.middlewares.http.stripprefix.prefixes=/${var.service_name}",
+        "traefik.http.routers.http.middlewares=http",
+        ]
             address = "$${attr.unique.platform.aws.public-ipv4}"
         } 
 
@@ -113,9 +118,9 @@ resource "nomad_job" "mongodb" {
 EOT  
 }
 
-data "consul_service" "mongodb" {
-    name = "${var.service_name}"
-}
+# data "consul_service" "mongodb" {
+#     name = "${var.service_name}"
+# }
 
 resource "vault_database_secrets_mount" "db" {
     path = "db"
@@ -123,8 +128,7 @@ resource "vault_database_secrets_mount" "db" {
         name = "mongodb"
         username             = "admin"
         password             = "password"
-        connection_url = "mongodb://{{username}}:{{password}}@${data.consul_service.mongodb.name}.service.consul"
-        #How do I get a valid port from the node?
+        connection_url = "mongodb://{{username}}:{{password}}@nomad-traefik-alb-1210287401.us-east-1.elb.amazonaws.com/${var.service_name}"
     }
     depends_on = [ nomad_job.mongodb ]
 }

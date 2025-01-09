@@ -55,6 +55,17 @@ provider "nomad" {
   secret_id = data.vault_kv_secret_v2.bootstrap.data["SecretID"]
 }
 
+data "terraform_remote_state" "nomad_cluster" {
+  backend = "remote"
+
+  config = {
+    organization = var.tfc_organization
+    workspaces = {
+      name = "5_nomad-cluster"
+    }
+  }
+}
+
 
 data "aws_iam_role" "role" {
     name = "nomad-node"

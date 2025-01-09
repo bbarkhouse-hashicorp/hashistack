@@ -232,7 +232,7 @@ resource "nomad_csi_volume_registration" "nomad_volume-1c" {
   }
 }
 
-resource "nomad_job" "ebs-nodes" {
+resource "nomad_job" "mysql" {
     depends_on = [ nomad_csi_volume_registration.nomad_volume-1a, nomad_csi_volume_registration.nomad_volume-1b, nomad_csi_volume_registration.nomad_volume-1c ]
     jobspec = <<EOT
 job "mysql-server" {

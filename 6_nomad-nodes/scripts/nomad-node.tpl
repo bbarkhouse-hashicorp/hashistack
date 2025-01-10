@@ -13,10 +13,7 @@ sudo systemctl restart consul
 
 # Configure systemd-resolved for Consul DNS forwarding
 sudo mkdir /etc/systemd/resolved.conf.d
-sudo echo "[Resolve]
-DNS=127.0.0.1:8600
-DNSSEC=false
-Domains=~consul" > consul.conf
+sudo bash -c "echo -e '[Resolve]\nDNS=127.0.0.1:8600\nDNSSEC=false\nDomains=~consul\n' > consul.conf" 
 
 sudo systemctl restart systemd-resolved
 

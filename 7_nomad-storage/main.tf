@@ -246,7 +246,7 @@ job "mysql-server" {
   node_pool = "x86"
   constraint {
     attribute = "$${attr.platform.aws.placement.availability-zone}"
-    value = "us-east-1b"
+    value = "us-east-1c"
   }
   group "mysql-server" {
     count = 1
@@ -254,7 +254,7 @@ job "mysql-server" {
     volume "mysql-data" {
       type            = "csi"
       read_only       = false
-      source          = "nomad-us-east-1b"
+      source          = "nomad-us-east-1c"
       access_mode     = "single-node-writer"
       attachment_mode = "file-system"
     }

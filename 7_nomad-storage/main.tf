@@ -282,7 +282,7 @@ job "mysql-server" {
       }
 
       env {
-        MYSQL_ROOT_PASSWORD = "${var.sql_pass}"
+        MYSQL_ROOT_PASSWORD = ${var.sql_pass}
       }
 
       config {

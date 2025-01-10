@@ -234,6 +234,7 @@ resource "nomad_csi_volume_registration" "nomad_volume-1c" {
 
 variable "sql_pass" {
   type = string
+  sensitive = true
 }
 
 resource "nomad_job" "mysql" {

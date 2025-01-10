@@ -240,7 +240,7 @@ variable "sql_pass" {
 resource "nomad_job" "mysql" {
     depends_on = [ nomad_csi_volume_registration.nomad_volume-1a, nomad_csi_volume_registration.nomad_volume-1b, nomad_csi_volume_registration.nomad_volume-1c ]
     jobspec = <<EOT
-job "mysql" {
+job "mysql-server" {
   datacenters = ["dc1"]
   type        = "service"
   node_pool = "x86"
@@ -248,10 +248,10 @@ job "mysql" {
     attribute = "$${attr.platform.aws.placement.availability-zone}"
     value = "us-east-1b"
   }
-  group "mysql" {
+  group "mysql-server" {
     count = 1
 
-    volume "mysql" {
+    volume "mysql-data" {
       type            = "csi"
       read_only       = false
       source          = "nomad-us-east-1b"
@@ -272,11 +272,11 @@ job "mysql" {
       mode     = "delay"
     }
 
-    task "mysql" {
+    task "mysql-server" {
       driver = "docker"
 
       volume_mount {
-        volume      = "mysql"
+        volume      = "mysql-data"
         destination = "/srv"
         read_only   = false
       }
@@ -297,7 +297,7 @@ job "mysql" {
       }
 
       service {
-        name = "mysql"
+        name = "mysql-server"
         port = "db"
 
         check {

@@ -232,6 +232,10 @@ resource "nomad_csi_volume_registration" "nomad_volume-1c" {
   }
 }
 
+variable "sql_pass" {
+  type = string
+}
+
 resource "nomad_job" "mysql" {
     depends_on = [ nomad_csi_volume_registration.nomad_volume-1a, nomad_csi_volume_registration.nomad_volume-1b, nomad_csi_volume_registration.nomad_volume-1c ]
     jobspec = <<EOT
@@ -277,7 +281,7 @@ job "mysql-server" {
       }
 
       env {
-        MYSQL_ROOT_PASSWORD = "password"
+        MYSQL_ROOT_PASSWORD = "${var.sql_pass}"
       }
 
       config {

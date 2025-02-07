@@ -374,8 +374,8 @@ resource "aws_autoscaling_attachment" "arm_node_asg_attachment" {
   autoscaling_group_name = aws_autoscaling_group.nomad_client_arm_asg.id
   lb_target_group_arn    = aws_alb_target_group.nomad_traefik_alb_tg.arn
 }
-resource "aws_dlm_lifecycle_policy" "snapshots" {
-  description = "Nomad client snapshot policy"
+resource "aws_dlm_lifecycle_policy" "x86_snapshots" {
+  description = "Nomad x86 client snapshot policy"
   execution_role_arn = data.doormat_aws_credentials.creds.role_arn
   state = "ENABLED"
   policy_details {
@@ -392,7 +392,28 @@ resource "aws_dlm_lifecycle_policy" "snapshots" {
         }
       }
       target_tags = {
-        "aws:autoscaling:groupName" = "nomad-client-x86",
+        "aws:autoscaling:groupName" = "nomad-client-x86"
+      }
+  }
+}
+resource "aws_dlm_lifecycle_policy" "arm_snapshots" {
+  description = "Nomad ARM client snapshot policy"
+  execution_role_arn = data.doormat_aws_credentials.creds.role_arn
+  state = "ENABLED"
+  policy_details {
+      resource_types = ["INSTANCE"]
+      schedule {
+        name = "2 weeks of daily snapshots"
+        create_rule {
+          interval = 24
+          interval_unit = "HOURS"
+          times = [ "23:45" ]
+        }
+        retain_rule {
+          count = 24
+        }
+      }
+      target_tags = {
         "aws:autoscaling:groupName" = "nomad-client-arm"
       }
   }

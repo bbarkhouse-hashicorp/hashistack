@@ -356,3 +356,25 @@ resource "vault_consul_secret_backend_role" "reader" {
     "consul-management-plane-ui-read-only",
   ]
 }
+resource "aws_dlm_lifecycle_policy" "snapshots" {
+  description = "Nomad server snapshot policy"
+  execution_role_arn = data.doormat_aws_credentials.creds.role_arn
+  state = "ENABLED"
+  policy_details {
+      resource_types = ["INSTANCE"]
+      schedule {
+        name = "2 weeks of daily snapshots."
+        create_rule {
+          interval = 24
+          interval_unit = "HOURS"
+          times = [ "23:45" ]
+        }
+        retain_rule {
+          count = 24
+        }
+      }
+      target_tags = {
+        "aws:autoscaling:groupName" = "nomad-server"
+      }
+  }
+}

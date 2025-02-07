@@ -19,8 +19,8 @@ job "hello-world-job" {
       tags = [
         "traefik.enable=true",
         "traefik.http.routers.http.rule=PathPrefix(`/hello-world`)",
-        "traefik.http.middlewares.http.stripprefix.prefixes=/hello-world",
-        "traefik.http.routers.http.middlewares=http",
+        #"traefik.http.middlewares.http.stripprefix.prefixes=/hello-world",
+        #"traefik.http.routers.http.middlewares=http",
         ]
       address = "${attr.unique.platform.aws.public-ipv4}"
       check {

@@ -363,7 +363,7 @@ resource "aws_dlm_lifecycle_policy" "snapshots" {
   policy_details {
       resource_types = ["INSTANCE"]
       schedule {
-        name = "2 weeks of daily snapshots."
+        name = "2 weeks of daily snapshots"
         create_rule {
           interval = 24
           interval_unit = "HOURS"

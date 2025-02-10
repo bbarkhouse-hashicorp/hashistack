@@ -387,38 +387,38 @@ data "aws_iam_policy_document" "assume_role" {
   }
 }
 
-resource "aws_iam_role" "dlm_lifecycle_role" {
-  name               = "dlm-lifecycle-role"
-  assume_role_policy = data.aws_iam_policy_document.assume_role.json
-}
+# resource "aws_iam_role" "dlm_lifecycle_role" {
+#   name               = "dlm-lifecycle-role"
+#   assume_role_policy = data.aws_iam_policy_document.assume_role.json
+# }
 
-data "aws_iam_policy_document" "dlm_lifecycle" {
-  statement {
-    effect = "Allow"
+# data "aws_iam_policy_document" "dlm_lifecycle" {
+#   statement {
+#     effect = "Allow"
 
-    actions = [
-      "ec2:CreateSnapshot",
-      "ec2:CreateSnapshots",
-      "ec2:DeleteSnapshot",
-      "ec2:DescribeInstances",
-      "ec2:DescribeVolumes",
-      "ec2:DescribeSnapshots",
-    ]
+#     actions = [
+#       "ec2:CreateSnapshot",
+#       "ec2:CreateSnapshots",
+#       "ec2:DeleteSnapshot",
+#       "ec2:DescribeInstances",
+#       "ec2:DescribeVolumes",
+#       "ec2:DescribeSnapshots",
+#     ]
 
-    resources = ["*"]
-  }
+#     resources = ["*"]
+#   }
 
-  statement {
-    effect    = "Allow"
-    actions   = ["ec2:CreateTags"]
-    resources = ["arn:aws:ec2:*::snapshot/*"]
-  }
-}
-resource "aws_iam_role_policy" "dlm_lifecycle" {
-  name   = "dlm-lifecycle-policy"
-  role   = aws_iam_role.dlm_lifecycle_role.id
-  policy = data.aws_iam_policy_document.dlm_lifecycle.json
-}
+#   statement {
+#     effect    = "Allow"
+#     actions   = ["ec2:CreateTags"]
+#     resources = ["arn:aws:ec2:*::snapshot/*"]
+#   }
+# }
+# resource "aws_iam_role_policy" "dlm_lifecycle" {
+#   name   = "dlm-lifecycle-policy"
+#   role   = aws_iam_role.dlm_lifecycle_role.id
+#   policy = data.aws_iam_policy_document.dlm_lifecycle.json
+# }
 resource "aws_dlm_lifecycle_policy" "x86_snapshots" {
   description = "Nomad x86 client snapshot policy"
   execution_role_arn = aws_iam_role.dlm_lifecycle_role.arn

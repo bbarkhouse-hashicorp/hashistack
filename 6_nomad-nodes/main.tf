@@ -381,7 +381,7 @@ data "aws_iam_role" "dlm_lifecycle_role" {
 
 resource "aws_dlm_lifecycle_policy" "x86_snapshots" {
   description = "Nomad x86 client snapshot policy"
-  execution_role_arn = aws_iam_role.dlm_lifecycle_role.arn
+  execution_role_arn = data.aws_iam_role.dlm_lifecycle_role.arn
   state = "ENABLED"
   policy_details {
       resource_types = ["INSTANCE"]
@@ -404,7 +404,7 @@ resource "aws_dlm_lifecycle_policy" "x86_snapshots" {
 
 resource "aws_dlm_lifecycle_policy" "arm_snapshots" {
   description = "Nomad ARM client snapshot policy"
-  execution_role_arn = aws_iam_role.dlm_lifecycle_role.arn
+  execution_role_arn = data.aws_iam_role.dlm_lifecycle_role.arn
   state = "ENABLED"
   policy_details {
       resource_types = ["INSTANCE"]

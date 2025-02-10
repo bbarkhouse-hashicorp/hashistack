@@ -197,6 +197,7 @@ resource "aws_alb" "nomad" {
   name            = "nomad-alb"
   security_groups = [aws_security_group.nomad_lb.id]
   subnets         = data.terraform_remote_state.networking.outputs.subnet_ids
+  idle_timeout = 320
 }
 
 resource "aws_alb_target_group" "nomad" {
